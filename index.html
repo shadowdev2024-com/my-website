@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CYBERDUNE CLUB — Elite Hacker Zone</title>
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Courier+Prime:wght@400;700&display=swap');
+  
+  :root {
+    --neon-green: #00ff41;
+    --neon-red: #ff0040;
+    --neon-blue: #0080ff;
+    --dark-bg: #000a00;
+    --matrix-green: #00cc33;
+    --cyber-purple: #8a2be2;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Orbitron', monospace;
+    background: var(--dark-bg);
+    color: var(--neon-green);
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Enhanced Matrix Background */
+  #matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 0.15;
+  }
+
+  .matrix-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, 
+      rgba(0, 20, 0, 0.3) 0%, 
+      rgba(0, 0, 0, 0.8) 70%, 
+      rgba(0, 0, 0, 0.95) 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Cyber Grid */
+  .cyber-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
+    animation: grid-move 20s linear infinite;
+  }
+
+  @keyframes grid-move {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+  }
+
+  /* Main Container */
+  .main-container {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .cyber-header {
+    padding: 20px;
+    text-align: center;
+    background: rgba(0, 10, 0, 0.8);
+    border-bottom: 2px solid var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+  }
+
+  .logo {
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-blue), var(--neon-red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+    animation: logo-pulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes logo-pulse {
+    from { filter: brightness(1) drop-shadow(0 0 5px var(--neon-green)); }
+    to { filter: brightness(1.2) drop-shadow(0 0 15px var(--neon-green)); }
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--neon-blue);
+    margin-top: 10px;
+    font-family: 'Courier Prime', monospace;
+    animation: typing 3s steps(30) 1s both;
+  }
+
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  /* Terminal Section */
+  .terminal-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  .terminal {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--neon-green);
+    border-radius: 10px;
+    max-width: 900px;
+    width: 100%;
+    box-shadow: 
+      0 0 30px rgba(0, 255, 65, 0.3),
+      inset 0 0 20px rgba(0, 255, 65, 0.1);
+    animation: terminal-glow 3s ease-in-out infinite alternate;
+    backdrop-filter: blur(10px);
+  }
+
+  @keyframes terminal-glow {
+    from { box-shadow: 0 0 30px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.1); }
+    to { box-shadow: 0 0 50px rgba(0, 255, 65, 0.5), inset 0 0 30px rgba(0, 255, 65, 0.2); }
+  }
+
+  .terminal-header {
+    background: var(--neon-green);
+    color: black;
+    padding: 10px 20px;
+    font-weight: 700;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff0040;
+  }
+  .dot:nth-child(2) { background: #ffaa00; }
+  .dot:nth-child(3) { background: #00cc33; }
+
+  .terminal-content {
+    padding: 30px;
+    font-family: 'Courier Prime', monospace;
+    line-height: 1.6;
+  }
+
+  .challenge-info {
+    margin-bottom: 30px;
+  }
+
+  .challenge-title {
+    font-size: 1.8rem;
+    color: var(--neon-red);
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px var(--neon-red);
+  }
+
+  .challenge-desc {
+    color: var(--neon-green);
+    margin-bottom: 20px;
+  }
+
+  .user-status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(0, 255, 65, 0.1);
+    border-left: 4px solid var(--neon-green);
+    border-radius: 5px;
+  }
+
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--neon-red);
+    animation: blink 1s infinite;
+  }
+
+  .status-indicator.admin {
+    background: var(--neon-green);
+    animation: none;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0.3; }
+  }
+
+  /* Input Section */
+  .input-section {
+    margin-top: 20px;
+  }
+
+  .input-label {
+    display: block;
+    color: var(--neon-blue);
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+
+  .cyber-input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--neon-green);
+    border-radius: 5px;
+    color: var(--neon-green);
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .cyber-input:focus {
+    outline: none;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 128, 255, 0.3);
+    background: rgba(0, 20, 40, 0.8);
+  }
+
+  .cyber-btn {
+    margin-top: 15px;
+    padding: 12px 25px;
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+  }
+
+  .cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 255, 65, 0.4);
+    filter: brightness(1.2);
+  }
+
+  /* Output Section */
+  .output-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    border-radius: 5px;
+    min-height: 100px;
+  }
+
+  .output-content {
+    font-family: 'Courier Prime', monospace;
+    color: var(--neon-green);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* Admin Panel */
+  .admin-panel {
+    display: none;
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(138, 43, 226, 0.1);
+    border: 2px solid var(--cyber-purple);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+  }
+
+  .admin-title {
+    color: var(--cyber-purple);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px var(--cyber-purple);
+  }
+
+  .flag-display {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid var(--cyber-purple);
+    font-family: 'Courier Prime', monospace;
+    color: var(--neon-green);
+    word-break: break-all;
+  }
+
+  /* Floating particles */
+  .particle {
+    position: fixed;
+    width: 2px;
+    height: 2px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .logo {
+      font-size: 2rem;
+      letter-spacing: 2px;
+    }
+    
+    .terminal-content {
+      padding: 20px;
+    }
+    
+    .challenge-title {
+      font-size: 1.4rem;
+    }
+  }
+
+  /* Glitch effect */
+  .glitch {
+    animation: glitch 0.3s ease-in-out;
+  }
+
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+  }
+</style>
+</head>
+<body>
+  <!-- Matrix Background -->
+  <canvas id="matrix-canvas"></canvas>
+  <div class="matrix-overlay"></div>
+  <div class="cyber-grid"></div>
+
+  <div class="main-container">
+    <!-- Header -->
+    <header class="cyber-header">
+      <h1 class="logo">CYBERDUNE CLUB</h1>
+      <p class="subtitle">[ ELITE HACKER TERMINAL • ACCESS LEVEL: CLASSIFIED ]</p>
+    </header>
+
+    <!-- Main Terminal -->
+    <main class="terminal-container">
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+          <span>CYBERDUNE_TERMINAL_v3.7.1 • SECURE CONNECTION</span>
+        </div>
+        
+        <div class="terminal-content">
+          <div class="challenge-info">
+            <h2 class="challenge-title">🔐 XSS PRIVILEGE ESCALATION CHALLENGE</h2>
+            <p class="challenge-desc">
+              Welcome to the CYBERDUNE elite zone. Your mission: escalate from <strong>USER</strong> to <strong>ADMIN</strong> 
+              using DOM-based XSS exploitation. The flag is hidden in the admin panel.
+            </p>
+            <p class="challenge-desc">
+              <strong>Objective:</strong> Find a way to execute JavaScript that grants you admin privileges.
+              <br><strong>Hint:</strong> User input is processed... but can you break out?
+            </p>
+          </div>
+
+          <!-- User Status -->
+          <div class="user-status">
+            <div class="status-indicator" id="statusLight"></div>
+            <span>Current Access Level: </span>
+            <strong id="userLevel">USER</strong>
+            <span id="adminBadge" style="display: none;">👑 ADMIN PRIVILEGES GRANTED</span>
+          </div>
+
+          <!-- Input Section -->
+          <div class="input-section">
+            <label class="input-label">Enter your username for profile lookup:</label>
+            <input type="text" class="cyber-input" id="usernameInput" placeholder="e.g., john_doe" />
+            <button class="cyber-btn" onclick="processUsername()">EXECUTE LOOKUP</button>
+          </div>
+
+          <!-- Output -->
+          <div class="output-section">
+            <div class="output-content" id="outputContent">
+> System ready. Awaiting user input...
+> Warning: All inputs are logged and monitored.
+            </div>
+          </div>
+
+          <!-- Admin Panel (Hidden) -->
+          <div class="admin-panel" id="adminPanel">
+            <h3 class="admin-title">🏴‍☠️ ADMIN CONTROL PANEL</h3>
+            <p style="color: var(--neon-green); margin-bottom: 15px;">
+              Congratulations! You successfully escalated privileges.
+            </p>
+            <div class="flag-display">
+              <strong>FLAG:</strong> <span id="flagContent"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Matrix Rain Effect
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const matrix = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()";
+    const matrixArray = matrix.split("");
+    
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    
+    for (let x = 0; x < columns; x++) {
+      drops[x] = 1;
+    }
+    
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#00ff41';
+      ctx.font = fontSize + 'px monospace';
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    
+    setInterval(drawMatrix, 100);
+    
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Floating Particles
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * window.innerWidth + 'px';
+      particle.style.top = '0px';
+      particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      particle.style.opacity = Math.random();
+      
+      document.body.appendChild(particle);
+      
+      const animation = particle.animate([
+        { transform: 'translateY(0px)' },
+        { transform: `translateY(${window.innerHeight + 100}px)` }
+      ], {
+        duration: parseInt(particle.style.animationDuration) * 1000,
+        easing: 'linear'
+      });
+      
+      animation.onfinish = () => particle.remove();
+    }
+    
+    setInterval(createParticle, 500);
+
+    // Challenge Logic
+    let isAdmin = false;
+    const flag = "CYBERDUNE{D0M_XSS_M4TR1X_H4CK3D_7h3_M41nFr4m3}";
+    
+    // Obfuscated admin check (this is the vulnerability)
+    window.adminSecretKey = "CYBERDUNE_ADMIN_2024";
+    
+    function processUsername() {
+      const input = document.getElementById('usernameInput').value;
+      const output = document.getElementById('outputContent');
+      
+      if (!input.trim()) {
+        updateOutput("> Error: Username cannot be empty.");
+        return;
+      }
+      
+      // Add glitch effect
+      document.querySelector('.terminal').classList.add('glitch');
+      setTimeout(() => {
+        document.querySelector('.terminal').classList.remove('glitch');
+      }, 300);
+      
+      updateOutput(`> Processing username: ${input}`);
+      updateOutput("> Scanning user database...");
+      
+      setTimeout(() => {
+        // Vulnerable code - DOM XSS here!
+        const profileHtml = `
+          <div style="color: #00ff41; margin: 10px 0;">
+            <strong>Profile Found:</strong><br>
+            Username: ${input}<br>
+            Status: Active<br>
+            Last Login: ${new Date().toLocaleString()}
+          </div>
+        `;
+        
+        // This is vulnerable - we're setting innerHTML with user input
+        const profileDiv = document.createElement('div');
+        profileDiv.innerHTML = profileHtml;
+        document.getElementById('outputContent').appendChild(profileDiv);
+        
+        updateOutput("> Profile lookup complete.");
+        
+        // Hidden admin check that can be exploited
+        if (window.adminAccess === true) {
+          grantAdminAccess();
+        }
+      }, 1500);
+    }
+    
+    function updateOutput(text) {
+      const output = document.getElementById('outputContent');
+      output.textContent += '\n' + text;
+      output.scrollTop = output.scrollHeight;
+    }
+    
+    function grantAdminAccess() {
+      if (isAdmin) return;
+      
+      isAdmin = true;
+      
+      // Update UI
+      document.getElementById('statusLight').classList.add('admin');
+      document.getElementById('userLevel').textContent = 'ADMIN';
+      document.getElementById('adminBadge').style.display = 'inline';
+      document.getElementById('adminPanel').style.display = 'block';
+      document.getElementById('flagContent').textContent = flag;
+      
+      updateOutput("> 🚨 PRIVILEGE ESCALATION DETECTED!");
+      updateOutput("> Welcome, Administrator.");
+      updateOutput("> Admin panel is now accessible.");
+      
+      // Celebration effect
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => createParticle(), i * 50);
+      }
+    }
+
+    // Easter egg: Konami code
+    let konamiCode = [];
+    const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+    
+    document.addEventListener('keydown', (e) => {
+      konamiCode.push(e.code);
+      if (konamiCode.length > konamiSequence.length) {
+        konamiCode.shift();
+      }
+      
+      if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+        updateOutput("> 🎮 KONAMI CODE DETECTED! Extra hint: Try breaking out of HTML context...");
+        konamiCode = [];
+      }
+    });
+
+    // Initialize
+    updateOutput("> CYBERDUNE Terminal initialized successfully.");
+    updateOutput("> Type a username to begin profile lookup.");
+    updateOutput("> System security level: MAXIMUM");
+  </script>
+</body>
+</html>
